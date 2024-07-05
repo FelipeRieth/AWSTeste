@@ -48,12 +48,12 @@ async function obterLinkThumbVideo(url) {
     try {
         const info = await ytdl.getInfo(url);
        
-        if (info.videoDetails.thumb != null) {
+        if (info.thumbnail_url != null) {
             // Retorna o URL do primeiro formato de vídeo encontrado
       
          
           
-            return info.videoDetails.thumb;
+            return info.thumbnail_url;
         } else {
             throw new Error('Nenhum formato de vídeo encontrado.');
         }
