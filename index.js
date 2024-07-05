@@ -63,6 +63,23 @@ async function obterLinkThumbVideo(url) {
     }
 }
 
+async function getVideoThumbnail(videoUrl) {
+    try {
+      // Fetch video information
+      const info = await ytdl.getInfo(videoUrl);
+  
+      // Extract the thumbnails array
+      const thumbnails = info.videoDetails.thumbnails;
+  
+      // Select the highest resolution thumbnail
+      const highestResThumbnail = thumbnails[thumbnails.length - 1];
+  
+      return highestResThumbnail.url;
+    } catch (error) {
+      console.error('Error fetching video thumbnail:', error);
+    }
+  }
+  
 function getVideoLink(url) {
     // Cria um objeto URL a partir do link fornecido
     const urlObj = new URL(url);
@@ -103,10 +120,10 @@ app.post('/validate-url', async (req, res) => {
 
     if (result.isYouTubeUrl) {
         const link = await obterLinkVideo(getVideoLink (url));
-        const thumnLink = await obterLinkThumbVideo(getVideoLink (url));
+        const thumnLink = await getVideoThumbnail(getVideoLink (url));
         result.link = link ? link : 'Não foi possível obter o link do vídeo.';
         result.title = filename;
-        result.thumb = thumnLink ? thumnLink: ""; 
+        result.thumb = thumnLink;
     }
 
     res.status(200).json(result);
