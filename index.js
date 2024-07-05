@@ -79,14 +79,14 @@ app.post('/validate-url', async (req, res) => {
         message: isYouTubeUrl(url) ? 'A URL é do YouTube' : 'A URL não é do YouTube',
         link: '',
         title: '',
-   
+        thumb: '',
     };
 
     if (result.isYouTubeUrl) {
         const link = await obterLinkVideo(getVideoLink (url));
         result.link = link ? link : 'Não foi possível obter o link do vídeo.';
         result.title = filename;
-        
+        result.thumb = link ? info.videoDetails.thumb.URL : ""; 
     }
 
     res.status(200).json(result);
