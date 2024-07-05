@@ -13,6 +13,7 @@ let filename;
 
 
 
+
 function preencherFilename(x) {
     filename = x;
 }
@@ -35,6 +36,24 @@ async function obterLinkVideo(url) {
             preencherFilename(info.videoDetails.title);
           
             return formatos[0].url;
+        } else {
+            throw new Error('Nenhum formato de vídeo encontrado.');
+        }
+    } catch (error) {
+        console.error('Erro ao obter o link do vídeo:', error);
+        return null;
+    }
+}
+async function obterLinkThumbVideo(url) {
+    try {
+        const info = await ytdl.getInfo(url);
+       
+        if (info.videoDetails.thumb != null) {
+            // Retorna o URL do primeiro formato de vídeo encontrado
+      
+         
+          
+            return info.videoDetails.thumb;
         } else {
             throw new Error('Nenhum formato de vídeo encontrado.');
         }
@@ -84,9 +103,10 @@ app.post('/validate-url', async (req, res) => {
 
     if (result.isYouTubeUrl) {
         const link = await obterLinkVideo(getVideoLink (url));
+        const thumnLink = await obterLinkThumbVideo(getVideoLink (url));
         result.link = link ? link : 'Não foi possível obter o link do vídeo.';
         result.title = filename;
-        result.thumb = link ? info.videoDetails.thumb.URL : ""; 
+        result.thumb = thumnLink ? thumnLink: ""; 
     }
 
     res.status(200).json(result);
